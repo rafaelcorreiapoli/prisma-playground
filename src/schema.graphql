@@ -1,0 +1,69 @@
+# import Post from "./generated/prisma.graphql"
+
+type Query {
+  technology(id: ID!): Technology
+  technologies: [Technology]
+  project(id: ID!): Project
+  projects: [Project]
+}
+
+
+input TechnologyCreateInput {
+  name: String!
+}
+
+input ProjectCreateInput {
+  name: String!
+}
+
+input TechnologyUpdateInput {
+  name: String!
+}
+
+input ProjectUpdateInput {
+  name: String!
+}
+
+input ConnectProjectAndTechnologyInput {
+  projectId: ID!
+  technologyId: ID!
+}
+
+type ConnectProjectAndTechnologyPayload {
+  project: Project
+  technology: Technology
+}
+input ConnectTechnologyAndTechnologyInput {
+  parentTechnologyId: ID!
+  childTechnologyId: ID!
+}
+
+type ConnectTechnologyAndTechnologyPayload {
+  updatedParentTechnology: Technology!
+  parentTechnology: Technology!
+  childTechnology: Technology!
+}
+
+type Mutation {
+  signup(email: String!, password: String!, name: String!): AuthPayload!
+  login(email: String!, password: String!): AuthPayload!
+  createTechnology(input: TechnologyCreateInput!): Technology
+  createProject(input: ProjectCreateInput!): Project
+  updateTechnology(id: ID!, data: TechnologyUpdateInput!): Technology
+  updateProject(id: ID!, data: ProjectUpdateInput!): Project
+  connectProjectAndTechnology(input: ConnectProjectAndTechnologyInput): ConnectProjectAndTechnologyPayload
+  connectTechnologyAndTechnology(input: ConnectTechnologyAndTechnologyInput!): Technology
+  clear: Boolean
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+# type User {
+#   id: ID!
+#   email: String!
+#   name: String!
+#   posts: [Post!]!
+# }

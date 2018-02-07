@@ -1,0 +1,26 @@
+type User {
+  id: ID! @unique
+  email: String! @unique
+  password: String!
+  name: String!
+  role: Role! @default(value: "CUSTOMER")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+type Technology {
+  id: ID! @unique
+  name: String!
+  projects: [Project!]!
+  childTechnologies: [Technology!]! @relation(name: "ChildTechnologies")
+  parentTechnology: Technology @relation(name: "ChildTechnologies")
+}
+
+type Project {
+  id: ID! @unique
+  name: String
+  technologies: [Technology!]!
+}

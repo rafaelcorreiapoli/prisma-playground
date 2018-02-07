@@ -1,0 +1,79 @@
+type User {
+  id: ID! @unique
+  email: String! @unique
+  password: String!
+  name: String!
+  role: Role! @default(value: "CUSTOMER")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+type Score {
+  viability: Float
+  demonstration: Float
+  investment: Float
+  desirability: Float
+  competition: Float
+}
+type Attachment {
+  id: ID! @unique
+  name: String
+  description: String
+  url: String
+}
+type Collection {
+  id: ID! @unique
+  name: String
+  description: String
+  color: String
+  icon: String
+  technologies: [Technology!]!
+}
+type Technology {
+  id: ID! @unique
+  techId: String!
+  name: String!
+  summary: String
+  description: String
+  status: String
+  imageUrl: String
+  impact: Int
+  score: Score
+
+  collection: Collection
+  tags: [Tag!]!
+  organizations: [Organization!]!
+  technologies: [Technology!]!
+  attachments: [Attachment!]!
+  projects: [Project!]!
+}
+type Organization {
+  id: ID! @unique
+  name: String
+  description: String
+  url: String
+  logoUrl: String
+
+  technologies: [Technology!]!
+}
+type Tag {
+  id: ID! @unique
+  code: String
+  name: String
+  description: String
+  alt: String
+
+  technologies: [Technology!]!
+}
+
+type Project {
+  id: ID! @unique
+
+  collections: [Collection!]!
+  organizations: [Organization!]!
+  technologies: [Technology!]!
+  attachments: [Attachment!]!
+}
