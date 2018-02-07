@@ -6,7 +6,6 @@ import { AuthPayload } from './AuthPayload'
 import { clear } from './Mutation/clear';
 import { project } from './Mutation/project'
 import { connect } from './Mutation/connect'
-import { Technology } from './Technology'
 
 export default {
   Query,
@@ -18,5 +17,4 @@ export default {
     ...connect
   },
   AuthPayload,
-  // Technology,
 }

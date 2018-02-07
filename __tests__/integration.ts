@@ -244,9 +244,6 @@ describe('Technology flows', () => {
         childTechnologyId: "${world.anotherTechId}"
       }) {
         id
-        childTechnologies {
-          id
-        }
       }
     }`
 
@@ -254,38 +251,18 @@ describe('Technology flows', () => {
     expect(data).toEqual({
       connectTechnologyAndTechnology: {
         id: world.id,
-        childTechnologies: [{
-          id: world.anotherTechId
-        }]
       }
     })
   })
 
-  it('should not show parent in childTechnologies of the child', async () => {
+  it('In the child, should show the parent in parentTechnologies and show nothing in the childTechnologies', async () => {
     const query = `{
       technology(id: "${world.anotherTechId}") {
         id
         childTechnologies {
           id
         }
-      }
-    }`
-
-    const data = await client.request(query)
-
-    expect(data).toEqual({
-      technology: {
-        id: world.anotherTechId,
-        childTechnologies: []
-      }
-    })
-  })
-
-  it ('should show parent in parentTechnology of the child', async () => {
-    const query = `{
-      technology(id: "${world.anotherTechId}") {
-        id
-        parentTechnology {
+        parentTechnologies {
           id
         }
       }
@@ -296,9 +273,36 @@ describe('Technology flows', () => {
     expect(data).toEqual({
       technology: {
         id: world.anotherTechId,
-        parentTechnology: {
+        childTechnologies: [],
+        parentTechnologies: [{
           id: world.id
+        }]
+      }
+    })
+  })
+
+  it ('In the parent, should show child in childTechnologies and show nothing in parentTechnologies', async () => {
+    const query = `{
+      technology(id: "${world.id}") {
+        id
+        childTechnologies {
+          id
         }
+        parentTechnologies {
+          id
+        }
+      }
+    }`
+
+    const data = await client.request(query)
+
+    expect(data).toEqual({
+      technology: {
+        id: world.id,
+        childTechnologies: [{
+          id: world.id
+        }],
+        parentTechnologies: []
       }
     })
   })

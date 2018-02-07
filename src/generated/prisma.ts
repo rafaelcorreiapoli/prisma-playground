@@ -20,7 +20,7 @@ type Technology implements Node {
   name: String!
   projects(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Project!]
   childTechnologies(where: TechnologyWhereInput, orderBy: TechnologyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Technology!]
-  parentTechnology(where: TechnologyWhereInput): Technology
+  parentTechnologies(where: TechnologyWhereInput, orderBy: TechnologyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Technology!]
 }
 
 type User implements Node {
@@ -252,11 +252,16 @@ type TechnologyConnection {
 input TechnologyCreateInput {
   name: String!
   projects: ProjectCreateManyWithoutTechnologiesInput
-  childTechnologies: TechnologyCreateManyWithoutParentTechnologyInput
-  parentTechnology: TechnologyCreateOneWithoutChildTechnologiesInput
+  childTechnologies: TechnologyCreateManyWithoutParentTechnologiesInput
+  parentTechnologies: TechnologyCreateManyWithoutChildTechnologiesInput
 }
 
-input TechnologyCreateManyWithoutParentTechnologyInput {
+input TechnologyCreateManyWithoutChildTechnologiesInput {
+  create: [TechnologyCreateWithoutChildTechnologiesInput!]
+  connect: [TechnologyWhereUniqueInput!]
+}
+
+input TechnologyCreateManyWithoutParentTechnologiesInput {
   create: [TechnologyCreateWithoutChildTechnologiesInput!]
   connect: [TechnologyWhereUniqueInput!]
 }
@@ -266,11 +271,6 @@ input TechnologyCreateManyWithoutProjectsInput {
   connect: [TechnologyWhereUniqueInput!]
 }
 
-input TechnologyCreateOneWithoutChildTechnologiesInput {
-  create: TechnologyCreateWithoutChildTechnologiesInput
-  connect: TechnologyWhereUniqueInput
-}
-
 input TechnologyCreateWithoutChildTechnologiesInput {
   name: String!
   projects: ProjectCreateManyWithoutTechnologiesInput
@@ -278,8 +278,8 @@ input TechnologyCreateWithoutChildTechnologiesInput {
 
 input TechnologyCreateWithoutProjectsInput {
   name: String!
-  childTechnologies: TechnologyCreateManyWithoutParentTechnologyInput
-  parentTechnology: TechnologyCreateOneWithoutChildTechnologiesInput
+  childTechnologies: TechnologyCreateManyWithoutParentTechnologiesInput
+  parentTechnologies: TechnologyCreateManyWithoutChildTechnologiesInput
 }
 
 type TechnologyEdge {
@@ -323,11 +323,20 @@ input TechnologySubscriptionWhereInput {
 input TechnologyUpdateInput {
   name: String
   projects: ProjectUpdateManyWithoutTechnologiesInput
-  childTechnologies: TechnologyUpdateManyWithoutParentTechnologyInput
-  parentTechnology: TechnologyUpdateOneWithoutChildTechnologiesInput
+  childTechnologies: TechnologyUpdateManyWithoutParentTechnologiesInput
+  parentTechnologies: TechnologyUpdateManyWithoutChildTechnologiesInput
 }
 
-input TechnologyUpdateManyWithoutParentTechnologyInput {
+input TechnologyUpdateManyWithoutChildTechnologiesInput {
+  create: [TechnologyCreateWithoutChildTechnologiesInput!]
+  connect: [TechnologyWhereUniqueInput!]
+  disconnect: [TechnologyWhereUniqueInput!]
+  delete: [TechnologyWhereUniqueInput!]
+  update: [TechnologyUpdateWithoutChildTechnologiesInput!]
+  upsert: [TechnologyUpsertWithoutChildTechnologiesInput!]
+}
+
+input TechnologyUpdateManyWithoutParentTechnologiesInput {
   create: [TechnologyCreateWithoutChildTechnologiesInput!]
   connect: [TechnologyWhereUniqueInput!]
   disconnect: [TechnologyWhereUniqueInput!]
@@ -345,15 +354,6 @@ input TechnologyUpdateManyWithoutProjectsInput {
   upsert: [TechnologyUpsertWithoutProjectsInput!]
 }
 
-input TechnologyUpdateOneWithoutChildTechnologiesInput {
-  create: TechnologyCreateWithoutChildTechnologiesInput
-  connect: TechnologyWhereUniqueInput
-  disconnect: TechnologyWhereUniqueInput
-  delete: TechnologyWhereUniqueInput
-  update: TechnologyUpdateWithoutChildTechnologiesInput
-  upsert: TechnologyUpsertWithoutChildTechnologiesInput
-}
-
 input TechnologyUpdateWithoutChildTechnologiesDataInput {
   name: String
   projects: ProjectUpdateManyWithoutTechnologiesInput
@@ -366,8 +366,8 @@ input TechnologyUpdateWithoutChildTechnologiesInput {
 
 input TechnologyUpdateWithoutProjectsDataInput {
   name: String
-  childTechnologies: TechnologyUpdateManyWithoutParentTechnologyInput
-  parentTechnology: TechnologyUpdateOneWithoutChildTechnologiesInput
+  childTechnologies: TechnologyUpdateManyWithoutParentTechnologiesInput
+  parentTechnologies: TechnologyUpdateManyWithoutChildTechnologiesInput
 }
 
 input TechnologyUpdateWithoutProjectsInput {
@@ -424,7 +424,9 @@ input TechnologyWhereInput {
   childTechnologies_every: TechnologyWhereInput
   childTechnologies_some: TechnologyWhereInput
   childTechnologies_none: TechnologyWhereInput
-  parentTechnology: TechnologyWhereInput
+  parentTechnologies_every: TechnologyWhereInput
+  parentTechnologies_some: TechnologyWhereInput
+  parentTechnologies_none: TechnologyWhereInput
 }
 
 input TechnologyWhereUniqueInput {
@@ -698,7 +700,7 @@ export interface ProjectUpdateManyWithoutTechnologiesInput {
   upsert?: ProjectUpsertWithoutTechnologiesInput[] | ProjectUpsertWithoutTechnologiesInput
 }
 
-export interface TechnologyUpdateManyWithoutParentTechnologyInput {
+export interface TechnologyUpdateManyWithoutParentTechnologiesInput {
   create?: TechnologyCreateWithoutChildTechnologiesInput[] | TechnologyCreateWithoutChildTechnologiesInput
   connect?: TechnologyWhereUniqueInput[] | TechnologyWhereUniqueInput
   disconnect?: TechnologyWhereUniqueInput[] | TechnologyWhereUniqueInput
@@ -757,8 +759,8 @@ export interface UserWhereUniqueInput {
 export interface TechnologyCreateInput {
   name: String
   projects?: ProjectCreateManyWithoutTechnologiesInput
-  childTechnologies?: TechnologyCreateManyWithoutParentTechnologyInput
-  parentTechnology?: TechnologyCreateOneWithoutChildTechnologiesInput
+  childTechnologies?: TechnologyCreateManyWithoutParentTechnologiesInput
+  parentTechnologies?: TechnologyCreateManyWithoutChildTechnologiesInput
 }
 
 export interface ProjectWhereUniqueInput {
@@ -784,7 +786,7 @@ export interface ProjectUpdateInput {
   technologies?: TechnologyUpdateManyWithoutProjectsInput
 }
 
-export interface TechnologyCreateManyWithoutParentTechnologyInput {
+export interface TechnologyCreateManyWithoutParentTechnologiesInput {
   create?: TechnologyCreateWithoutChildTechnologiesInput[] | TechnologyCreateWithoutChildTechnologiesInput
   connect?: TechnologyWhereUniqueInput[] | TechnologyWhereUniqueInput
 }
@@ -836,9 +838,9 @@ export interface ProjectWhereInput {
   technologies_none?: TechnologyWhereInput
 }
 
-export interface TechnologyCreateOneWithoutChildTechnologiesInput {
-  create?: TechnologyCreateWithoutChildTechnologiesInput
-  connect?: TechnologyWhereUniqueInput
+export interface TechnologyCreateManyWithoutChildTechnologiesInput {
+  create?: TechnologyCreateWithoutChildTechnologiesInput[] | TechnologyCreateWithoutChildTechnologiesInput
+  connect?: TechnologyWhereUniqueInput[] | TechnologyWhereUniqueInput
 }
 
 export interface TechnologyUpsertWithoutProjectsInput {
@@ -854,24 +856,24 @@ export interface ProjectCreateInput {
 
 export interface TechnologyUpdateWithoutProjectsDataInput {
   name?: String
-  childTechnologies?: TechnologyUpdateManyWithoutParentTechnologyInput
-  parentTechnology?: TechnologyUpdateOneWithoutChildTechnologiesInput
+  childTechnologies?: TechnologyUpdateManyWithoutParentTechnologiesInput
+  parentTechnologies?: TechnologyUpdateManyWithoutChildTechnologiesInput
 }
 
-export interface TechnologyUpdateOneWithoutChildTechnologiesInput {
-  create?: TechnologyCreateWithoutChildTechnologiesInput
-  connect?: TechnologyWhereUniqueInput
-  disconnect?: TechnologyWhereUniqueInput
-  delete?: TechnologyWhereUniqueInput
-  update?: TechnologyUpdateWithoutChildTechnologiesInput
-  upsert?: TechnologyUpsertWithoutChildTechnologiesInput
+export interface TechnologyUpdateManyWithoutChildTechnologiesInput {
+  create?: TechnologyCreateWithoutChildTechnologiesInput[] | TechnologyCreateWithoutChildTechnologiesInput
+  connect?: TechnologyWhereUniqueInput[] | TechnologyWhereUniqueInput
+  disconnect?: TechnologyWhereUniqueInput[] | TechnologyWhereUniqueInput
+  delete?: TechnologyWhereUniqueInput[] | TechnologyWhereUniqueInput
+  update?: TechnologyUpdateWithoutChildTechnologiesInput[] | TechnologyUpdateWithoutChildTechnologiesInput
+  upsert?: TechnologyUpsertWithoutChildTechnologiesInput[] | TechnologyUpsertWithoutChildTechnologiesInput
 }
 
 export interface TechnologyUpdateInput {
   name?: String
   projects?: ProjectUpdateManyWithoutTechnologiesInput
-  childTechnologies?: TechnologyUpdateManyWithoutParentTechnologyInput
-  parentTechnology?: TechnologyUpdateOneWithoutChildTechnologiesInput
+  childTechnologies?: TechnologyUpdateManyWithoutParentTechnologiesInput
+  parentTechnologies?: TechnologyUpdateManyWithoutChildTechnologiesInput
 }
 
 export interface UserUpdateInput {
@@ -883,8 +885,8 @@ export interface UserUpdateInput {
 
 export interface TechnologyCreateWithoutProjectsInput {
   name: String
-  childTechnologies?: TechnologyCreateManyWithoutParentTechnologyInput
-  parentTechnology?: TechnologyCreateOneWithoutChildTechnologiesInput
+  childTechnologies?: TechnologyCreateManyWithoutParentTechnologiesInput
+  parentTechnologies?: TechnologyCreateManyWithoutChildTechnologiesInput
 }
 
 export interface TechnologyWhereInput {
@@ -924,7 +926,9 @@ export interface TechnologyWhereInput {
   childTechnologies_every?: TechnologyWhereInput
   childTechnologies_some?: TechnologyWhereInput
   childTechnologies_none?: TechnologyWhereInput
-  parentTechnology?: TechnologyWhereInput
+  parentTechnologies_every?: TechnologyWhereInput
+  parentTechnologies_some?: TechnologyWhereInput
+  parentTechnologies_none?: TechnologyWhereInput
 }
 
 export interface TechnologyUpdateWithoutChildTechnologiesDataInput {
@@ -1025,7 +1029,7 @@ export interface Technology extends Node {
   name: String
   projects?: Project[]
   childTechnologies?: Technology[]
-  parentTechnology?: Technology
+  parentTechnologies?: Technology[]
 }
 
 export interface UserPreviousValues {

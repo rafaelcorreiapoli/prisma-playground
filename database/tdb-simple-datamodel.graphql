@@ -15,10 +15,9 @@ type Technology {
   id: ID! @unique
   name: String!
   projects: [Project!]!
-  childTechnologies: [Technology!]! @relation(name: "ChildTechnologies")
-  parentTechnology: Technology @relation(name: "ChildTechnologies")
+  childTechnologies: [Technology!]! @relation(name: "MyRelation")
+  parentTechnologies: [Technology!]! @relation(name: "MyRelation")
 }
-
 type Project {
   id: ID! @unique
   name: String

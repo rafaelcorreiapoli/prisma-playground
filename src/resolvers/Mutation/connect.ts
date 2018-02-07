@@ -30,42 +30,17 @@ export const connect = {
   async connectTechnologyAndTechnology(parent, { input: { parentTechnologyId, childTechnologyId }}, ctx: Context, info) {
     const parentTechnology = await ctx.db.mutation.updateTechnology({
       where: {
-        id: childTechnologyId
+        id: parentTechnologyId
       },
       data: {
-        parentTechnology: {
+        childTechnologies: {
           connect: {
-            id: parentTechnologyId
+            id: childTechnologyId
           }
         }
       }
     })
-    console.log(parentTechnology)
 
-    // const childTechnology  = await ctx.db.mutation.updateTechnology({
-    //   where: {
-    //     id: childTechnologyId
-    //   },
-    //   data: {
-    //     parentTechnologies: {
-    //       connect: {
-    //         id: parentTechnologyId
-    //       }
-    //     }
-    //   }
-    // })
     return parentTechnology
-    // await sleep(10000)
-    // const updatedParentTechnology = await ctx.db.query.technology({
-    //   where: {
-    //     id: parentTechnologyId
-    //   }
-    // }, info)
-
-    // console.log(updatedParentTechnology)
-    // return {
-    //   parentTechnology,
-    //   updatedParentTechnology,
-    // }
   }
 }
